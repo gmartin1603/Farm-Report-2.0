@@ -24,7 +24,10 @@ function App() {
   const [expense, setExpense] = useState('')
   const [id, setId] = useState(1)
   const [add, setAdd] = useState(false)
+  const [addLabel, setAddLabel] = useState(false)
   const [newExpense, setNewExpense] = useState('')
+  const [newLabel, setNewLabel] = useState('')
+  const [label, setLabel] = useState('')
 
   
 
@@ -52,16 +55,16 @@ function App() {
     fun(array)
   }
 
-  const addOption = (arr, attr, value) => {
+  const addOption = (arr, attr, value, additon, func) => {
     let i = arr.length
     while (i--) {
       if(arr[i] 
         && arr[i].hasOwnProperty(attr) 
         && arr[i][attr] === value){ 
-         arr[i]["options"].push(newOption)
+         arr[i]["options"].push(additon)
          console.log(arr)
          return (
-           setExpenses(arr)
+           func(arr)
          )
        }
     }
@@ -79,18 +82,17 @@ function App() {
       writeData('expenses', obj, expenses)
       document.getElementById('add__new').reset()
     } else {
-      addOption(expenses, "label", expense)
+      addOption(expenses, "label", expense, newOption, setExpenses)
       console.log(expense)
-      // let array = optionList
-      // array.push(newOption)
-      // let obj = {
-      //   label: expense,
-      //   dispatch: 'SET_EXP',
-      //   options: array
-      // } 
-      writeData('expenses', expenses)
+      writeData('expenses', null, expenses)
       document.getElementById('add__new').reset()
     }
+  } 
+  const addNewLabel = (e) => {
+    e.preventDefault()
+    addOption(labels, 'label', label, newLabel, setLabels)
+    writeData('labels', null, labels)
+    document.getElementById('add__new__label').reset()
   } 
 
 
@@ -153,6 +155,7 @@ function App() {
       console.log(id)
       document.getElementById("Expense").reset()
       setOptionList('')
+      setExpense('')
     }
     else return
   }
@@ -189,10 +192,14 @@ function App() {
         setExpense(e.target.value)
         break
       case ("Add_Expense") :
-        e.target.value === 'add__expense' ?
+        e.target.value === 'add' ?
         setAdd(true)
         :
         setExpense(e.target.value)
+        break
+      case ("Add_New_Label") :
+        setAddLabel(true)
+        setLabel(e.target.value)
         break
       case ("Price") :
         setPrice(e.target.value)
@@ -291,32 +298,39 @@ function App() {
               <option key={obj.label}value={obj.label}> {obj.label} </option>
             ))
           }
-          <option value="add__expense">Add New</option>
+          <option value="add">Add New</option>
         </select>
         {
-          // optionList ?  
-           
-          // // <label for="expense">Add Expense</label>
-          // <select name={expense} onChange={(e) => {handleChange(e); document.getElementById('add__new__input').focus()}}>
-          //   <option value="" selected hidden>Choose here</option>
-            
-          //   {        
-          //     optionList &&
-          //     optionList.map((obj) => (
-          //       <option key={obj} >{obj}</option>
-          //     ))         
-          //   }
-          // </select>
-          // :
           add ?
           <input id='add__new__input' type="text"onChange= {(e) => setNewExpense(e.target.value)}/>
           :
           expense ? 
           <input type="text" onChange={(e) => setNewOption(e.target.value)}/>
           : ''
-            
         }  
-          <button type="submit" onClick={(e) => addNewExpense(e)}>ADD</button>
+        <button type="submit" onClick={(e) => addNewExpense(e)}>ADD</button>
+        </Select>
+      </form>
+      <form id="add__new__label" action="add__new__label">
+        <Select>
+          <label htmlFor="Add_New_Label">Add Heading Option</label>
+          <select name="Add_New_Label" onChange={(e) => handleChange(e)}>
+          <option value="" defaultValue hidden>Choose here</option>
+          {
+            labels &&
+            labels.map((obj) => (
+              <option value={obj.label}>{obj.label}</option>
+            ))
+          }
+          </select>
+          {
+            addLabel ? 
+              <input type="text"onChange= {(e) => setNewLabel(e.target.value)}/>
+              :
+              ''
+          }
+              <button type="submit" onClick={(e) => addNewLabel(e)}>ADD</button>
+
         </Select>
       </form>
       </Input>
@@ -428,7 +442,9 @@ const Container = styled.div`
 `
 
 const Input = styled.div`
-  
+  @media print {
+    display: none;
+  }
 `
 
 const Select = styled.div`
@@ -438,19 +454,27 @@ const Select = styled.div`
 `
 
 const Report = styled.div`
-
+  h3 {
+    text-align: center;
+    padding: 10px;
+  }
 `
 const Header = styled.div`
-
+  text-align: center;
 `
 const Expense = styled.div`
   display: flex;
   flex-direction: column;
-
+  
 `
 const Item = styled.div`
   display: flex;
   p {
     margin: 0 5px;
+  }
+  button {
+    @media print {
+      display: none;
+    }
   }
 `

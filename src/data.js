@@ -20,12 +20,10 @@ export const getData = (coll, func) => {
         snapshot.forEach((docs) => {
             switch (coll) {
                 case "labels":
-                    func(docs.data().labels)
-                    console.log(docs.data().labels)
+                    func(docs.data().expenses)
                     break
                 case "expenses":
                     func(docs.data().expenses)
-                    console.log(docs.data().expenses)
                     break
                 default:
                     return
@@ -36,14 +34,21 @@ export const getData = (coll, func) => {
 
 export const writeData = (coll, exp, expenses) => {
     console.log(expenses)
-    if (exp) {
-        let array = expenses
-        array.push(exp)
+    if (coll === 'expenses') {
+        if (exp) {
+            let array = expenses
+            array.push(exp)
+        }
+        db.collection(coll).doc('8CJ5sBDg05YAVjow0HUW').set({
+            expenses
+            
+        })
+    } else {
+        db.collection(coll).doc('4awrazQ0r23HC8hoEUfO').set({
+            expenses
+            
+        })
     }
-    db.collection(coll).doc('8CJ5sBDg05YAVjow0HUW').set({
-        expenses
-        
-    })
 }
 
 // export let labels = getData('labels')
