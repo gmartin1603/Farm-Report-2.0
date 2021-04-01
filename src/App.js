@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import {getData, writeData} from './data'
+import Item from '../src/Item'
 
 function App() {
 
@@ -14,6 +15,8 @@ function App() {
   const [landLord, setLandLord] = useState('')
   const [crop, setCrop] = useState('')
   const [chemical, setChemical] = useState('')
+  const [fuel, setFuel] = useState('')
+  const [trucking, setTrucking] = useState('')
   const [fertilizer, setFertilizer] = useState('')
   const [seedList, setSeedList] = useState([])
   const [chemList, setChemList] = useState([])
@@ -29,6 +32,10 @@ function App() {
   const [newLabel, setNewLabel] = useState('')
   const [label, setLabel] = useState('')
 
+  
+  //add qty to print out
+  //give crop option to trucking
+  //grand total at bottom
   
 
   useEffect(() => {
@@ -108,43 +115,68 @@ function App() {
             name: seed,
             price: price,
             qty: qty,
+            unit: "Bag",
             id: int
             
           }
           setSeedList([...seedList, obj])
           break;
-        case ('Chemical'):
+        case ('Chemical Dry'):
           obj = {
             name: chemical,
             price: price,
             qty: qty,
+            unit: "lb",
             id: id
           }
           setChemList([...chemList, obj])
           break;
-        case ('Fertilizer'):
+        case ('Chemical Liquid'):
+          obj = {
+            name: chemical,
+            price: price,
+            qty: qty,
+            unit: "gal",
+            id: id
+          }
+          setChemList([...chemList, obj])
+          break;
+        case ('Fertilizer Dry'):
           obj = {
             name: fertilizer,
             price: price,
             qty: qty,
+            unit: "lb",
             id: id
           }
           setFertList([...chemList, obj])
           break;
-        case ('LP'):
+        case ('Fertilizer Liquid'):
           obj = {
-            name: expense,
+            name: fertilizer,
             price: price,
             qty: qty,
+            unit: "gal",
+            id: id
+          }
+          setFertList([...chemList, obj])
+          break;
+        case ('Fuel'):
+          obj = {
+            name: fuel,
+            price: price,
+            qty: qty,
+            unit: "gal",
             id: id
           }
           setFuelList([...fuelList, obj])
           break;
         case ('Trucking'):
           obj = {
-            name: expense,
+            name: trucking,
             price: price,
             qty: qty,
+            unit: "bushel",
             id: id
           }
           setTruckingList([...truckingList, obj])
@@ -182,11 +214,23 @@ function App() {
       case ("Seed") :
         setSeed(e.target.value)
         break
-      case ("Chemical") :
+      case ("Chemical Liquid") :
         setChemical(e.target.value)
         break
-      case ("Fertilizer") :
+      case ("Chemical Dry") :
+        setChemical(e.target.value)
+        break
+      case ("Fertilizer Dry") :
         setFertilizer(e.target.value)
+        break
+      case ("Fertilizer Liquid") :
+        setFertilizer(e.target.value)
+        break
+      case ("Fuel") :
+        setFuel(e.target.value)
+        break
+      case ("Trucking") :
+        setTrucking(e.target.value)
         break
       case ("Expense") :
         setExpense(e.target.value)
@@ -347,12 +391,12 @@ function App() {
         {
           seedList &&
           seedList.map((obj) => (
-            <Item>
-            <p><b>Name:</b> {obj.name}</p>
-            <p><b>Price per bag:</b> {obj.price}</p>
-            <p><b>Total:</b> ${obj.price * obj.qty}</p>
-            <button onClick={() => removeItem(seedList, 'id', obj.id, setSeedList)}>Delete</button>
-            </Item>
+            <Item 
+            obj={obj}
+            list={seedList}
+            state={setSeedList} 
+            removeItem={removeItem} 
+            />
           ))
         }
       </Expense>
@@ -365,12 +409,12 @@ function App() {
         {
           chemList &&
           chemList.map((obj) => (
-            <Item>
-            <p><b>Name:</b> {obj.name}</p>
-            <p><b>Price per gal:</b> ${obj.price}</p>
-            <p><b>Total:</b> ${obj.price * obj.qty}</p>
-            <button onClick={() => removeItem(chemList, 'id', obj.id, setChemList)}>Delete</button>
-            </Item>
+            <Item 
+            obj={obj}
+            list={chemList}
+            state={setChemList} 
+            removeItem={removeItem} 
+            />
           ))
         }
       </Expense>
@@ -383,12 +427,12 @@ function App() {
         {
           fertList &&
           fertList.map((obj) => (
-            <Item>
-            <p><b>Name:</b> {obj.name}</p>
-            <p><b>Price per gal:</b> ${obj.price}</p>
-            <p><b>Total:</b> ${obj.price * obj.qty}</p>
-            <button onClick={() => removeItem(chemList, 'id', obj.id, setFertList)}>Delete</button>
-            </Item>
+            <Item 
+            obj={obj}
+            list={fertList}
+            state={setFertList} 
+            removeItem={removeItem} 
+            />
           ))
         }
       </Expense>
@@ -401,12 +445,12 @@ function App() {
         {
           fuelList &&
           fuelList.map((obj) => (
-            <Item>
-            <p><b>Name:</b> {obj.name}</p>
-            <p><b>Price per gal:</b> ${obj.price}</p>
-            <p><b>Total:</b> ${obj.price * obj.qty}</p>
-            <button onClick={() => removeItem(chemList, 'id', obj.id, setFuelList)}>Delete</button>
-            </Item>
+            <Item 
+            obj={obj}
+            list={fuelList}
+            state={setFuelList} 
+            removeItem={removeItem} 
+            />
           ))
         }
       </Expense>
@@ -419,12 +463,12 @@ function App() {
         {
           truckingList &&
           truckingList.map((obj) => (
-            <Item>
-            <p><b>Name:</b> {obj.name}</p>
-            <p><b>Price per Bu:</b> ${obj.price}</p>
-            <p><b>Total:</b> ${obj.price * obj.qty}</p>
-            <button onClick={() => removeItem(truckingList, 'id', obj.id, setTruckingList)}>Delete</button>
-            </Item>
+            <Item 
+            obj={obj}
+            list={truckingList}
+            state={setTruckingList} 
+            removeItem={removeItem} 
+            /> 
           ))
         }
       </Expense>
@@ -467,14 +511,4 @@ const Expense = styled.div`
   flex-direction: column;
   
 `
-const Item = styled.div`
-  display: flex;
-  p {
-    margin: 0 5px;
-  }
-  button {
-    @media print {
-      display: none;
-    }
-  }
-`
+
